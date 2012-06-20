@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title-tag %}oc.tl{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="{% block meta-description %}oc.tl by paulbersch{% endblock %}">
+        <meta name="author" content="Paul Bersch">
+        {% block extra-meta %}
+        {% endblock %}
+
+        <link href="/media/bootstrap/css/bootstrap.css" rel="stylesheet">
+        <style type="text/css">
+        body {
+            padding-top: 60px; /* make space for nav /*
+        }
+        </style>
+        <link href="/media/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+
+        <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+
+        {% load link_tags %}
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container-fluid">
+                    <a class="brand" href="#">oc.tl</a>
+                    <ul class="nav">
+                        <li class="{% if request.path|slice:":3" == '/c/' %}active{% endif %}"><a href="/c/">Recent</a></li>
+                        <li class="{% if request.path|slice:":3" == '/l/' %}active{% endif %}"><a href="/l/">Links</a></li>
+                        <li class="{% if request.path|slice:":3" == '/i/' %}active{% endif %}"><a href="/i/">Worthless Ideas</a></li>
+                        <li class="{% if request.path|slice:":3" == '/p/' %}active{% endif %}"><a href="/p/">Projects</a></li>
+                    </ul>
+                    {% comment %}<p class="navbar-text">Internets from <a href="#">Paul Bersch</a></p>{% endcomment %}
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span9">
+                {% block content %}
+                {% endblock %}
+                </div><!--/span-->
+                <div class="span3">
+                    <div class="well sidebar-nav">
+                        <ul class="nav nav-list">
+                            {% block side-nav %}
+
+                            <li class="nav-header">Recent</li>
+
+                            {% recent_content 5 as recent%}
+
+                            {% for content in recent%}
+                            <li class="{% if request.path == content.get_absolute_url %}active{% endif %}"><a href="{{ content.get_absolute_url }}">{{ content.name }}</a></li>
+                            {% endfor %}
+
+                            {% endblock %}
+                        </ul>
+                    </div><!--/.well -->
+                </div><!--/span-->
+            </div><!--/row-->
+
+            <hr>
+
+            <footer>
+                <p>&copy; Paul Bersch 2012</p>
+            </footer>
+
+        </div><!--/.fluid-container-->
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <script src="/media/bootstrap/js/bootstrap.js"></script>
+        {% block extra-js %}
+        {% endblock %}
+        <script type="text/javascript">
+
+          var _gaq = _gaq || [];
+          _gaq.push(['_setAccount', 'UA-94479-14']);
+          _gaq.push(['_setDomainName', 'oc.tl']);
+          _gaq.push(['_trackPageview']);
+
+          (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+          })();
+
+        </script>
+
+    </body>
+</html>
+

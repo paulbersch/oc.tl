@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>{{ item.created }}</h3>
+<h1><a href="{{ item.get_absolute_url }}">{{ item.name }}</a></h1>
+{{ item.description|linebreaks }}
+<p>Last updated {{ item.updated }}</p>
+
+{% if item.tags.all|length > 0 %}
+<ul class="content-tags">
+    <li>Tags:</li>
+    {% for tag in item.tags.all %}
+    <li><a href="{{ tag.get_absolute_url }}">{{ tag.name }}</a></li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% endblock %}
