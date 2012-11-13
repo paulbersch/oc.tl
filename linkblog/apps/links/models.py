@@ -23,7 +23,7 @@ class ContentManager(models.Manager):
 class Content(models.Model):
     objects = ContentManager()
 
-    name = models.CharField(max_length=500, unique=True)
+    name = models.CharField(max_length=500, unique=True, blank=True)
     slug = models.SlugField(max_length=50, unique=True, blank=True)
 
     created = models.DateTimeField(blank=True)
@@ -36,7 +36,16 @@ class Content(models.Model):
     def __unicode__(self):
         return self.name
 
+    def synopsis(self):
+        return self.name
+
     def save(self, *args, **kwargs):
+        if(not self.content_type):
+            self.content_type = ContentType.objects.get_for_model(self.__class__)
+
+        if self.name is None or self.name == '':
+            self.name = " - ".join([unicode(self.content_type), unicode(self.created)])
+
         if self.id is None and not self.created:
             self.created = datetime.now()
         # auto-generate a slug
@@ -45,9 +54,6 @@ class Content(models.Model):
                 self.slug = slugify(self.name)[:50].lower()
             else:
                self.slug = slugify(self.name).lower()
-
-        if(not self.content_type):
-            self.content_type = ContentType.objects.get_for_model(self.__class__)
 
         super(Content, self).save(*args, **kwargs)
 
@@ -98,6 +104,9 @@ class Link(Content):
 
     template = 'links/detail/link.html'
 
+    def sysnopsis(self):
+        return self.discussion[:100] if len(self.discussion) > 100 else self.discussion
+
     def get_absolute_url(self):
         return "/%s/" % "/".join([str(x) for x in ['l', self.created.year, self.created.month, self.created.day, self.slug]])
 
@@ -106,13 +115,20 @@ class Idea(Content):
 
     template = 'links/detail/idea.html'
 
+    def sysnopsis(self):
+        return self.description[:100] if len(self.description) > 100 else self.description
+
     def get_absolute_url(self):
         return "/%s/" % "/".join([str(x) for x in ['i', self.created.year, self.created.month, self.created.day, self.slug]])
 
 class Note(Content):
     text = models.TextField()
+    projects = models.ManyToManyField('Project', blank=True)
 
     template = 'links/detail/note.html'
+
+    def sysnopsis(self):
+        return self.text[:100] if len(self.text) > 100 else self.text
 
     def get_absolute_url(self):
         return "/%s/" % "/".join([str(x) for x in ['n', self.created.year, self.created.month, self.created.day, self.slug]])
@@ -123,5 +139,65 @@ class Tweet(Content):
 
     raw_tweet_json = models.TextField()
 
+    template = 'links/detail/tweet.html'
+
+    def sysnopsis(self):
+        return ""
+
     def get_absolute_url(self):
-        return "/%s/" % "/".join([str(x) for x in ['tw', self.created.year, self.created.month, self.created.day, self.slug]])
+        return "/%s/" % "/".join([str(x) for x in ['s', self.created.year, self.created.month, self.created.day, self.slug]])
+
+class BookAuthor(models.Model):
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=50, blank=True, unique=True)
+
+    def __unicode__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        # auto-generate a slug
+        if len(self.slug) == 0:
+            if len(self.name) > 50:
+                self.slug = slugify(self.name)[:50].lower()
+            else:
+               self.slug = slugify(self.name).lower()
+
+        super(BookAuthor, self).save(*args, **kwargs)
+
+class Book(models.Model):
+    title = models.CharField(max_length=500)
+    slug = models.SlugField(max_length=50, blank=True, unique=True)
+
+    author = models.ForeignKey(BookAuthor)
+    description = models.TextField()
+    purchase_link = models.CharField(max_length=500)
+
+    def __unicode__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        # auto-generate a slug
+        if len(self.slug) == 0:
+            if len(self.title) > 50:
+                self.slug = slugify(self.title)[:50].lower()
+            else:
+               self.slug = slugify(self.title).lower()
+
+        super(Book, self).save(*args, **kwargs)
+
+class ReadingLog(Content):
+    book = models.ForeignKey(Book)
+    page = models.IntegerField(blank=True)
+    chapter = models.IntegerField(blank=True)
+    placename = models.CharField(max_length=100, blank=True)
+
+    text = models.TextField()
+
+    template = 'links/detail/readinglog.html'
+
+    def sysnopsis(self):
+        return self.text[:100] if len(self.text) > 100 else self.text
+
+    def get_absolute_url(self):
+        return "/%s/" % "/".join([str(x) for x in ['r', self.book.slug, self.created.year, self.created.month, self.created.day, self.slug]])
+

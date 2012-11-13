@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
+        <meta name="google-site-verification" content="DvqSHxOltmadmgrACavIz7UWn9Znz26Edu_fTUTrI3k" />
         <title>{% block title-tag %}oc.tl{% endblock %}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="{% block meta-description %}oc.tl by paulbersch{% endblock %}">
@@ -9,13 +10,134 @@
         {% block extra-meta %}
         {% endblock %}
 
-        <link href="/media/bootstrap/css/bootstrap.css" rel="stylesheet">
+        <link href="/media/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href='http://fonts.googleapis.com/css?family=Press+Start+2P|Play:400,700' rel='stylesheet' type='text/css'>
+
+        {% comment %} gingham colors
+        {% with link='#4069A8' visited='#5D99F4' navlink='hsla(232, 85%, 40%, 1)' navvisited='hsla(232, 85%, 80%, 1)' navhighlight='hsla(16, 90%, 75%, 1)' %}
+        {% endcomment %}
+        {% with link='#4069A8' visited='#5D99F4' navlink='#4069A8' navvisited='#5D99F4' navhighlight='#5D99F4' %}
         <style type="text/css">
         body {
-            padding-top: 60px; /* make space for nav /*
+            font-family: 'Play', sans-serif;
+            padding-top: 60px; /* make space for nav */
+            color: #333;
+            background-color: #FFF;
+        }
+
+        .scanlines {
+            background-color: #EEE;
+            background-image: -webkit-repeating-linear-gradient(hsla(0, 0%, 5%, .5), hsla(0, 0%, 5%, .5) 2px, transparent 2px, transparent 3px, hsla(0, 0%, 50%, .5) 3px, hsla(0, 0%, 50%, .5) 6px);
+            background-position: -16px -11px;
+            background-size: 6px 6px;
+        }
+
+        .gingham {
+            background-color: #FFF;
+            background-image: -webkit-repeating-linear-gradient(hsla(232, 85%, 40%, .5), hsla(232, 85%, 40%, .5) 10px, transparent 10px, transparent 20px, hsla(16, 90%, 50%, .5) 20px, hsla(16, 90%, 50%, .5) 30px, transparent 30px, transparent 40px), -webkit-repeating-linear-gradient(0deg, hsla(232, 85%, 40%, .5), hsla(232, 85%, 40%, .5) 10px, transparent 10px, transparent 20px, hsla(16, 90%, 50%, .5) 20px, hsla(16, 90%, 50%, .5) 30px, transparent 30px, transparent 40px);
+            background-position: -16px -11px;
+            background-size: 40px 40px;
+        }
+
+        .navbar {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 8px;
+            min-height: 40px;
+        }
+        .navbar-inner {
+            min-height: 40px;
+        }
+        .navbar .brand {
+            font-size: 24px;
+        }
+        .nav {
+            padding-top: 3px;
+        }
+        .navbar .nav .active > a, .navbar .nav .active > a:hover {
+            background-color: transparent;
+        }
+
+        .excerpt {
+            font-style: italic;
+            background-color: #DDD;
+            padding: 15px 15px 5px 15px;
+            margin-bottom: 15px;
+        }
+
+        .content-item.tweet h1 {
+            font-size: 1.1em;
+            line-height: 1.2em;
+        }
+
+        /*
+        #content {
+            background-color: rgba(255, 255, 255, 1);
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #EEE;
+        }
+        */
+
+        .content-item {
+            background-color: white;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #EEE;
+            border-radius: 4px;
+        }
+
+        a {
+            color: {{ link }}; /* blue */
+        }
+        a:visited {
+            color: {{ visited }};
+        }
+
+        .nav-list .nav-header {
+            font-family: 'Press Start 2P', monospace;
+            color: #333;
+            background-color: inherit;
+            text-shadow: none;
+            font-size: 16px;
+        }
+        .nav-list > li > a {
+            text-shadow: none;
+            color: {{ navlink }};
+        }
+
+        .nav-list > .active > a {
+            background-color: {{ navhighlight }};
+            text-shadow: none;
+        }
+        .nav-list > li > a:visited {
+            color: {{ navvisited }};
+            text-shadow: none;
+        }
+        .nav-list > .active > a:visited {
+            color: {{ navlink }};
+            text-shadow: none;
+        }
+
+        .well {
+            background-color: white;
+        }
+
+        .update-time {
+            font-size: .8em;
+        }
+        .created-time {
+            font-size: 1.1em;
+        }
+        footer {
+            background-color: white;
+            border: 1px solid #EEE;
+            border-radius: 4px;
+            padding: 5px;
+            margin-bottom: 10px;
         }
         </style>
-        <link href="/media/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+        {% endwith %}
+        <link href="/media/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 
         <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
@@ -23,13 +145,12 @@
         <![endif]-->
     </head>
 
-    <body>
-
+    <body class="scanlines">
         {% load link_tags %}
         <div class="navbar navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container-fluid">
-                    <a class="brand" href="#">oc.tl</a>
+                    <a class="brand" href="/">paul@oc.tl$ _</a>
                     <ul class="nav">
                         <li class="{% if request.path|slice:":3" == '/c/' %}active{% endif %}"><a href="/c/">Recent</a></li>
                         <li class="{% if request.path|slice:":3" == '/l/' %}active{% endif %}"><a href="/l/">Links</a></li>
@@ -43,16 +164,14 @@
 
         <div class="container-fluid">
             <div class="row-fluid">
-                <div class="span9">
-                {% block content %}
-                {% endblock %}
-                </div><!--/span-->
                 <div class="span3">
                     <div class="well sidebar-nav">
                         <ul class="nav nav-list">
                             {% block side-nav %}
 
+                            {% comment %}
                             <li class="nav-header">Recent</li>
+                            {% endcomment %}
 
                             {% recent_content 5 as recent%}
 
@@ -62,11 +181,21 @@
 
                             {% endblock %}
                         </ul>
-                    </div><!--/.well -->
-                </div><!--/span-->
+                    </div>
+                </div>
+                <div class="span7" id="content">
+                {% block content %}
+                {% endblock %}
+                </div>
+                <div class="span2">
+                    <div class="well sidebar-nav">
+                        <ul class="nav nav-list">
+                            <li><a href="#">&laquo; more recently: asdf tron lalalalala hey what what yo</a></li>
+                            <li><a href="#">&raquo; previously: jkl sauce</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div><!--/row-->
-
-            <hr>
 
             <footer>
                 <p>&copy; Paul Bersch 2012</p>
@@ -75,7 +204,7 @@
         </div><!--/.fluid-container-->
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-        <script src="/media/bootstrap/js/bootstrap.js"></script>
+        <script src="/media/bootstrap/js/bootstrap.min.js"></script>
         {% block extra-js %}
         {% endblock %}
         <script type="text/javascript">

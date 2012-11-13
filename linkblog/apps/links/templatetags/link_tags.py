@@ -5,4 +5,4 @@ register = template.Library()
 
 @register.assignment_tag
 def recent_content(count):
-    return Content.objects.all()[:count]
+    return Content.objects.all().order_by('updated')[:count]
