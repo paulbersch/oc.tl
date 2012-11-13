@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="content-item tweet">
+    <h3 class="created-time">{{ item.created }}</h3>
+    <h1>{{ item.text|urlize }}</h1>
+    <a href="{{ item.get_absolute_url }}">Link</a> <a href="http://twitter.com/pnbersch/status/{{ item.tweet_id }}">Twitter</a>
+    <p class="update-time">Last updated {{ item.updated }}</p>
+</div>
+{% endblock %}

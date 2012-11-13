@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="content-item">
+    <h3 class="created-time">{{ item.created }}</h3>
+    <a href="{{ item.get_absolute_url }}"><h1>{{ item.name }}</h1></a>
+    {% if item.projects.all|length > 0 %}
+    <p>Related to projects:</p>
+    <ul class="content-projects">
+        {% for project in item.projects.all %}
+        <li><a href="{{ project.get_absolute_url }}">{{ project.name }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <div class="excerpt">
+    {{ item.excerpt|linebreaks }}
+    </div>
+
+    {{ item.discussion|linebreaks|safe }}
+
+    <p class="update-time">Last updated {{ item.updated }}</p>
+
+    {% if item.tags.all|length > 0 %}
+    <h4>Tags:</h4>
+    <ul class="content-tags">
+        {% for tag in item.tags.all %}
+        <li><a href="{{ tag.get_absolute_url }}">{{ tag.name }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="content-item">
+    <h1>Content tagged <a href="{{ tag.url }}">{{ tag.name }}</a></h1>
+
+    {% for item in items %}
+
+    <ul>
+        <li><a href="{{ item.get_absolute_url }}">{{ item.name }}</a></li>
+    </ul>
+
+    {% endfor %}
+</div>
+
+{% endblock %}

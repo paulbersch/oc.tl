@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="content-item">
+    <h3 class="created-time">{{ item.created }}</h3>
+    <h1><a href="{{ item.get_absolute_url }}">{{ item.name }}</a></h1>
+    {% if item.code_url %}
+    <p>Code Hosted at <a href="{{ item.code_url }}">{{ item.code_url }}</a></p>
+    {% endif %}
+    {% if item.example_url %}
+    <p>Demo/Live at <a href="{{ item.example_url }}">{{ item.example_url }}</a></p>
+    {% endif %}
+    {{ item.description|linebreaks }}
+    <p class="update-time">Last updated {{ item.updated }}</p>
+
+    {% if item.tags.all|length > 0 %}
+    <h4>Tags:</h4>
+    <ul class="content-tags">
+        {% for tag in item.tags.all %}
+        <li><a href="{{ tag.get_absolute_url }}">{{ tag.name }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</div>
+{% endblock %}
