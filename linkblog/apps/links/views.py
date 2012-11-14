@@ -1,7 +1,7 @@
 import sys
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from models import Content, Link, Idea, Note, Tweet, Tag, Project, ReadingLog
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 # Create your views here.
 
@@ -63,10 +63,10 @@ def tag_list(request, slug):
 
     return render_to_response('links/tag.html', {"tag": tag, "items": items}, context_instance = RequestContext(request))
 
-def detail(request, year, month, day, slug):
-    item = Content.objects.get(created__year=year, created__month=month, created__day=day, slug=slug).as_leaf_class()
+def detail(request, type, year, month, day, slug):
+    item = get_object_or_404(Content, created__year=year, created__month=month, created__day=day, slug=slug).as_leaf_class()
     return render_to_response(item.template, { 'item': item }, context_instance = RequestContext(request))
 
 def book_detail(request, book, year, month, day, slug):
-    item = ReadingLog.objects.get(book__slug= book, created__year=year, created__month=month, created__day=day, slug=slug).as_leaf_class()
+    item = get_object_or_404(ReadingLog, ReadingLog, book__slug= book, created__year=year, created__month=month, created__day=day, slug=slug).as_leaf_class()
     return render_to_response(item.template, { 'item': item }, context_instance = RequestContext(request))

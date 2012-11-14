@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %} - {{ item.name }}{% endblock %}
+
+{% block content %}
+<div class="content-item">
+    <h3 class="created-time">{{ item.created }}</h3>
+    <a href="{{ item.get_absolute_url }}"><h2>{{ item.name }}</h2></a>
+     <div class="posted-in">Posted in: 
+    {% if item.tags.all|length > 0 %}
+        {% for tag in item.tags.all %}
+       <a href="{{ tag.get_absolute_url }}" class="tag">{{ tag.name }}</a>{% if not forloop.last %} | {% endif %}
+    {% endfor %}
+    </div>
+    </ul>
+    {% endif %}
+
+    {% if item.files.all %}
+        {% for image in item.images.all %}
+            <img src="{{ image.image.url }}" alt="{{ image.name }}">
+            <p class="caption">{{ image.name }}</p>
+        {% endfor %}
+    {% endif %}
+
+
+    {{ item.text|safe }}
+
+    {% if item.files.all %}
+    <h3>Downloads</h3>
+    <ul class="files">
+        {% for file in item.files.all %}
+        <li><a href="{{ file.file.url }}">{{ file.name }} ({{ file.extension }}, {{ file.file.size|filesizeformat }})</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <span class="update-time">Last updated {{ item.updated }}</span>
+
+</div>
+{% endblock %}

@@ -4,6 +4,7 @@ from django.template.defaultfilters import slugify
 from django.db.models.query import QuerySet
 from django.contrib.contenttypes.models import ContentType
 from datetime import datetime
+from os.path import splitext
 
 class SubclassingQuerySet(QuerySet):
     def __getitem__(self, k):
@@ -23,21 +24,27 @@ class ContentManager(models.Manager):
 class Content(models.Model):
     objects = ContentManager()
 
-    name = models.CharField(max_length=500, unique=True, blank=True)
+    name = models.CharField(max_length=255, unique=True, blank=True)
     slug = models.SlugField(max_length=50, unique=True, blank=True)
 
     created = models.DateTimeField(blank=True)
     updated = models.DateTimeField(auto_now=True)
 
-    tags = models.ManyToManyField('Tag', blank=True)
+    files = models.ManyToManyField('File', blank=True, null=True)
+    images = models.ManyToManyField('Image', blank=True, null=True)
+
+    tags = models.ManyToManyField('Tag', blank=False)
 
     content_type = models.ForeignKey(ContentType,editable=False,null=True)
+
+    class Meta:
+        ordering = ('-created',)
 
     def __unicode__(self):
         return self.name
 
     def synopsis(self):
-        return self.name
+        return "This is not what you intended to happen."
 
     def save(self, *args, **kwargs):
         if(not self.content_type):
@@ -68,12 +75,19 @@ class Content(models.Model):
             return self
 
 class Tag(models.Model):
-    name = models.CharField(max_length=500, unique=True)
+    name = models.CharField(max_length=255, unique=True)
     slug = models.SlugField(max_length=50, unique=True, blank=True)
 
     template = 'links/tag.html' 
+
+    @models.permalink
     def get_absolute_url(self):
-        return "/%s/" % "/".join(['t', self.slug])
+        return ('tag_list',
+            (),
+            {
+                'slug': self.slug
+            }
+        )
 
     def __unicode__(self):
         return self.name
@@ -87,14 +101,62 @@ class Tag(models.Model):
                 self.slug = slugify(self.name).lower()
         super(Tag, self).save(*args, **kwargs)
 
+class File(models.Model):
+    name = models.CharField(max_length=200)
+    name.help_text = "This will be displayed as a caption underneath the image."
+    file = models.FileField(upload_to="files/", max_length=1000)
+
+    def extension(self):
+        return splitext(self.file.name)[1][1:].upper()
+
+    def __unicode__(self):
+        return u" - ".join([self.file.name, self.name])
+
+class Image(models.Model):
+    name = models.CharField(max_length=200)
+    image = models.ImageField(upload_to="images/", max_length=1000)
+
+    def __unicode__(self):
+        return u" - ".join([self.image.name, self.name])
+
 class Project(Content):
     code_url = models.CharField(max_length=500)
     example_url = models.CharField(max_length=500)
 
     template = 'links/detail/project.html'
 
+    @models.permalink
     def get_absolute_url(self):
-        return "/%s/" % "/".join([str(x) for x in ['p', self.created.year, self.created.month, self.created.day, self.slug]])
+        return ('',
+            (),
+            {
+                'year': self.created.year,
+                'month': self.created.month,
+                'day': self.created.day,
+                'slug': self.slug
+            }
+        )
+
+class Page(Content):
+    text = models.TextField()
+
+    template = 'links/detail/page.html'
+
+    def synopsis(self):
+        return self.text
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('content_detail',
+            (),
+            {
+                'type': 'p',
+                'year': self.created.year,
+                'month': self.created.month,
+                'day': self.created.day,
+                'slug': self.slug
+            }
+        )
 
 class Link(Content):
     url = models.CharField(max_length=500)
@@ -104,8 +166,8 @@ class Link(Content):
 
     template = 'links/detail/link.html'
 
-    def sysnopsis(self):
-        return self.discussion[:100] if len(self.discussion) > 100 else self.discussion
+    def synopsis(self):
+        return self.discussion
 
     def get_absolute_url(self):
         return "/%s/" % "/".join([str(x) for x in ['l', self.created.year, self.created.month, self.created.day, self.slug]])
@@ -115,8 +177,8 @@ class Idea(Content):
 
     template = 'links/detail/idea.html'
 
-    def sysnopsis(self):
-        return self.description[:100] if len(self.description) > 100 else self.description
+    def synopsis(self):
+        return self.description
 
     def get_absolute_url(self):
         return "/%s/" % "/".join([str(x) for x in ['i', self.created.year, self.created.month, self.created.day, self.slug]])
@@ -127,8 +189,8 @@ class Note(Content):
 
     template = 'links/detail/note.html'
 
-    def sysnopsis(self):
-        return self.text[:100] if len(self.text) > 100 else self.text
+    def synopsis(self):
+        return self.text
 
     def get_absolute_url(self):
         return "/%s/" % "/".join([str(x) for x in ['n', self.created.year, self.created.month, self.created.day, self.slug]])
@@ -141,7 +203,7 @@ class Tweet(Content):
 
     template = 'links/detail/tweet.html'
 
-    def sysnopsis(self):
+    def synopsis(self):
         return ""
 
     def get_absolute_url(self):
@@ -195,9 +257,10 @@ class ReadingLog(Content):
 
     template = 'links/detail/readinglog.html'
 
-    def sysnopsis(self):
+    def synopsis(self):
         return self.text[:100] if len(self.text) > 100 else self.text
 
     def get_absolute_url(self):
         return "/%s/" % "/".join([str(x) for x in ['r', self.book.slug, self.created.year, self.created.month, self.created.day, self.slug]])
 
+# vim: tabstop=4:shiftwidth=4:set expandtab:retab

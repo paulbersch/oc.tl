@@ -1,14 +1,20 @@
 {% extends 'base.html' %}
 
+{% block title %} - Home{% endblock %}
+
 {% block content %}
-{% for content in items %}
-{% with item=content.as_leaf_class %}
-<div class="content-item {{ item.content_type }}">
-    <div class="content-type">{{ item.content_type }}</div>
-    <h3 class="created-time">{{ item.created }}</h3>
-    <a href="{{ item.get_absolute_url }}"><h1>{{ item.name }}</h1></a>
-    {{ item.synopsis|linebreaks|safe }}
-</div>
-{% endwith %}
-{% endfor %}
+
+    {% for content in items %}
+    {% with item=content.as_leaf_class %}
+    <div class="content-item {{ item.content_type }}">
+        <h3 class="created-time">{{ item.created }}</h3>
+        <a href="{{ item.get_absolute_url }}"><h2>{{ item.name }}</h1></a>
+        {{ item.synopsis|truncatewords_html:20|safe }}
+        <a href="{{ item.get_absolute_url }}">Read more</a>
+    </div>
+    {% endwith %}
+    {% empty %}
+    <p>No content yet.</p>
+    {% endfor %}
+
 {% endblock %}

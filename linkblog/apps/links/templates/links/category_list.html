@@ -1,11 +1,19 @@
 {% extends 'base.html' %}
 
+{% block title %}{% endblock %}
+
 {% block content %}
-{% for item in items %}
+
+{% for content in items %}
+{% with item=content.as_leaf_class %}
 <div class="content-item">
     <h3 class="created-time">{{ item.created }}</h3>
-    <a href="{{ item.get_absolute_url }}"><h1>{{ item.name }}</h1></a>
-    {{ item.synopsys|linebreaks|safe }}
+    <a href="{{ item.get_absolute_url }}"><h2>{{ item.name }}</h2></a>
+    {{ item.synopsis|truncatewords_html:50|safe }}
 </div>
+{% endwith %}
+{% empty %}
+<p>No content yet.</p>
 {% endfor %}
+
 {% endblock %}
