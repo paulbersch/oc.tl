@@ -5,8 +5,8 @@ class RichTextAdmin(ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
     class Media:
         js = [
-            '/cedarcreek/static/grappelli/tinymce/jscripts/tiny_mce/tiny_mce.js',
-            '/cedarcreek/site_media/js/tinymce_setup.js',
+            '/static/grappelli/tinymce/jscripts/tiny_mce/tiny_mce.js',
+            '/site_media/js/tinymce_setup.js',
         ]
 
 class TagAdmin(ModelAdmin):
