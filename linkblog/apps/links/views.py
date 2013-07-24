@@ -68,5 +68,5 @@ def detail(request, type, year, month, day, slug):
     return render_to_response(item.template, { 'item': item }, context_instance = RequestContext(request))
 
 def book_detail(request, book, year, month, day, slug):
-    item = get_object_or_404(ReadingLog, ReadingLog, book__slug= book, created__year=year, created__month=month, created__day=day, slug=slug).as_leaf_class()
+    item = get_object_or_404(ReadingLog, book__slug= book, created__year=year, created__month=month, created__day=day, slug=slug).as_leaf_class()
     return render_to_response(item.template, { 'item': item }, context_instance = RequestContext(request))

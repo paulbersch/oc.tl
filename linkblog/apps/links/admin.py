@@ -13,6 +13,7 @@ class TagAdmin(ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
 
 class ProjectAdmin(ModelAdmin):
+    prepopulated_fields = {"slug": ("name",)}
     filter_horizontal = ['tags','files','images']
 
 class PageAdmin(RichTextAdmin):
@@ -25,9 +26,11 @@ class LinkAdmin(RichTextAdmin):
     filter_horizontal = ['tags','projects','files','images']
 
 class IdeaAdmin(ModelAdmin):
+    prepopulated_fields = {"slug": ("name",)}
     filter_horizontal = ['tags','files','images']
 
 class TweetAdmin(ModelAdmin):
+    prepopulated_fields = {"slug": ("name",)}
     filter_horizontal = ['tags','files','images']
     list_display = ['tweet_id','text','created','updated']
 

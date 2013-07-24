@@ -2,3 +2,5 @@
 *.pyc
 *.db
 local_settings.py
+static/
+linkblog/site_media/cms

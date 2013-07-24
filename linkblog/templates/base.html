@@ -10,7 +10,8 @@
         {% block extra-meta %}
         {% endblock %}
 
-        <link href="/media/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/site_media/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/site_media/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
         <link href='http://fonts.googleapis.com/css?family=Press+Start+2P|Play:400,700' rel='stylesheet' type='text/css'>
 
         {% comment %} gingham colors
@@ -137,7 +138,6 @@
         }
         </style>
         {% endwith %}
-        <link href="/media/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 
         <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
         <!--[if lt IE 9]>
@@ -145,7 +145,7 @@
         <![endif]-->
     </head>
 
-    <body class="scanlines">
+    <body class="gingham">
         {% load link_tags %}
         <div class="navbar navbar-fixed-top">
             <div class="navbar-inner">
@@ -156,6 +156,7 @@
                         <li class="{% if request.path|slice:":3" == '/l/' %}active{% endif %}"><a href="/l/">Links</a></li>
                         <li class="{% if request.path|slice:":3" == '/i/' %}active{% endif %}"><a href="/i/">Worthless Ideas</a></li>
                         <li class="{% if request.path|slice:":3" == '/p/' %}active{% endif %}"><a href="/p/">Projects</a></li>
+                        <li class="{% if request.path|slice:":3" == '/r/' %}active{% endif %}"><a href="/r/">Reading</a></li>
                     </ul>
                     {% comment %}<p class="navbar-text">Internets from <a href="#">Paul Bersch</a></p>{% endcomment %}
                 </div>
@@ -204,7 +205,7 @@
         </div><!--/.fluid-container-->
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-        <script src="/media/bootstrap/js/bootstrap.min.js"></script>
+        <script src="/site_media/bootstrap/js/bootstrap.min.js"></script>
         {% block extra-js %}
         {% endblock %}
         <script type="text/javascript">

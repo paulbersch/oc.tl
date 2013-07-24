@@ -11,5 +11,5 @@ urlpatterns = patterns('',
     url(r'^t/(?P<slug>.*)/$', tag_list, name="tag_list"),
     url(r'^(?P<category>[slipn])/$', category_list),
     url(r'^(?P<type>[slipn])/(?P<year>\d{4})/(?P<month>\d{1,2})/(?P<day>\d{1,2})/(?P<slug>.*)/$', detail, name="content_detail"),
-    url(r'^r/(?P<book>.*)/(?P<year>\d{4})/(?P<month>\d{1,2})/(?P<day>\d{1,2})/(?P<slug>.*)/$', book_detail),
+    url(r'^r/(?P<book>.*)/(?P<year>\d{4})/(?P<month>\d{1,2})/(?P<day>\d{1,2})/(?P<slug>.*)/$', book_detail, name="book_detail"),
 )

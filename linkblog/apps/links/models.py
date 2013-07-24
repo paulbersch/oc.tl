@@ -249,7 +249,7 @@ class Book(models.Model):
 
 class ReadingLog(Content):
     book = models.ForeignKey(Book)
-    page = models.IntegerField(blank=True)
+    page_number = models.IntegerField(blank=True, null=True)
     chapter = models.IntegerField(blank=True)
     placename = models.CharField(max_length=100, blank=True)
 
@@ -260,7 +260,18 @@ class ReadingLog(Content):
     def synopsis(self):
         return self.text[:100] if len(self.text) > 100 else self.text
 
+    @models.permalink
     def get_absolute_url(self):
-        return "/%s/" % "/".join([str(x) for x in ['r', self.book.slug, self.created.year, self.created.month, self.created.day, self.slug]])
+        return ('content_detail',
+            (),
+            {
+                'type': 'r',
+                'book': self.book.slug,
+                'year': self.created.year,
+                'month': self.created.month,
+                'day': self.created.day,
+                'slug': self.slug
+            }
+        )
 
 # vim: tabstop=4:shiftwidth=4:set expandtab:retab
